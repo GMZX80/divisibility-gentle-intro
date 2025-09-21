@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Divisibility by 3 — why the digit sum works</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#121a33; --ink:#eaf2ff; --muted:#a9b8d6; --accent:#7cc4ff;
+      --ok:#8ef6b1; --warn:#ffd27c; --bad:#ff9aa2; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:18px;
+    }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;line-height:1.55}
+    a{color:var(--accent)}
+    header{padding:28px 16px 8px;position:sticky;top:0;background:linear-gradient(180deg,var(--bg),rgba(11,16,32,.85) 40%,rgba(11,16,32,.6) 100%);backdrop-filter:blur(6px);z-index:50}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 14px}
+    h1{font-size:clamp(1.6rem,2.2vw,2.1rem);margin:.2rem 0 0.5rem}
+    .sub{color:var(--muted);font-size:.98rem}
+    nav{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:10px}
+    nav a{padding:8px 12px;border:1px solid rgba(255,255,255,.12);border-radius:999px;text-decoration:none;color:var(--ink)}
+
+    main{padding:18px 0 60px}
+    section{margin:28px 0;padding:22px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
+    h2{margin:0 0 12px;font-size:1.3rem}
+    h3{margin:18px 0 8px;font-size:1.05rem;color:var(--accent)}
+    p{margin:.4rem 0;color:#dfe7ff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .card{background:#0f1630;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
+    .muted{color:var(--muted)}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin:2px 4px 2px 0;font-size:.86rem;border:1px solid rgba(255,255,255,.18)}
+    .tag.ok{background:rgba(142,246,177,.15);border-color:rgba(142,246,177,.35)}
+    .tag.bad{background:rgba(255,154,162,.15);border-color:rgba(255,154,162,.35)}
+    .tag.warn{background:rgba(255,210,124,.15);border-color:rgba(255,210,124,.35)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input[type="text"], button{font-size:1rem}
+    input[type="text"], select{background:#0a0f22;color:var(--ink);border:1px solid rgba(255,255,255,.18);padding:10px;border-radius:10px;width:100%;box-sizing:border-box}
+    button{background:linear-gradient(180deg,#2a67ff,#3bb0ff);color:white;border:none;padding:10px 14px;border-radius:12px;cursor:pointer;box-shadow:0 8px 14px rgba(0,0,0,.3)}
+    button.secondary{background:#1a2344}
+    .mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+    .hl{background:rgba(124,196,255,.2);border:1px solid rgba(124,196,255,.5);border-radius:6px;padding:0 4px}
+    .explain{background:#0f1630;border-left:3px solid var(--accent);padding:10px;border-radius:12px}
+    .quiz .q{margin:8px 0 14px}
+    .quiz .opt{margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);cursor:pointer}
+    .quiz .opt.correct{border-color:rgba(142,246,177,.7);background:rgba(142,246,177,.12)}
+    .quiz .opt.wrong{border-color:rgba(255,154,162,.6);background:rgba(255,154,162,.1)}
+    .score{font-weight:700}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Divisibility by 3 — a gentle proof</h1>
+      <div class="sub">Rule, why it works, and a step-by-step interactive that shows the digit-sum method.</div>
+      <nav>
+        <a href="#rule">The rule</a>
+        <a href="#proof">Simple proof</a>
+        <a href="#interactive">Interactive</a>
+        <a href="#quiz">Quiz</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="rule">
+      <h2>1) The rule</h2>
+      <p><strong>A whole number is divisible by 3 if and only if the sum of its digits is divisible by 3.</strong></p>
+      <p class="muted">“Divisible” means it goes in exactly with <em>no remainder</em>.</p>
+    </section>
+
+    <section id="proof">
+      <h2>2) Why the digit sum decides it (simple proof)</h2>
+      <div class="explain">
+        <p>Write a number in base-10 as digits <span class="mono">aₖ…a₂a₁a₀</span>. Its value is</p>
+        <p class="mono">N = aₖ·10ᵏ + ··· + a₂·10² + a₁·10 + a₀.</p>
+        <ol>
+          <li><strong>10 and 1 leave the same remainder mod 3.</strong> Since <span class="mono">10 = 3·3 + 1</span>, we say <span class="mono">10 ≡ 1 (mod 3)</span>.</li>
+          <li><strong>So every power of 10 acts like 1.</strong> <span class="mono">10ᵢ ≡ 1ᵢ ≡ 1 (mod 3)</span>.</li>
+          <li><strong>Therefore</strong> <span class="mono">N ≡ aₖ + ··· + a₂ + a₁ + a₀ (mod 3)</span>.</li>
+          <li><strong>Conclusion.</strong> \(N\) is divisible by 3 iff the <em>digit sum</em> is divisible by 3.</li>
+        </ol>
+        <details><summary>Optional: tiny example</summary>
+          <p><span class="mono">27,531</span> → digit sum = <span class="mono">2+7+5+3+1 = 18</span>. Since 18 is a multiple of 3, the original number is divisible by 3.</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="interactive">
+      <h2>3) Interactive: check with digit sums</h2>
+      <div class="card">
+        <div class="row">
+          <div style="flex:2;min-width:260px">
+            <label class="muted" for="numInput">Enter a whole number (commas/spaces OK)</label>
+            <input id="numInput" type="text" placeholder="e.g. 27531" />
+          </div>
+          <button id="checkBtn">Check divisibility</button>
+          <button class="secondary" id="clearBtn">Clear</button>
+        </div>
+        <div style="margin-top:8px">
+          <span class="muted">Presets:</span>
+          <button class="secondary" data-ex="27531">27,531</button>
+          <button class="secondary" data-ex="144999">144,999</button>
+          <button class="secondary" data-ex="913">913</button>
+          <button class="secondary" data-ex="1200">1,200</button>
+        </div>
+        <div id="result" style="margin-top:12px"></div>
+      </div>
+    </section>
+
+    <section id="quiz" class="quiz">
+      <h2>4) Quick quiz (5 questions)</h2>
+      <div class="card">
+        <div id="quizBox"></div>
+        <div class="row" style="margin-top:10px">
+          <button id="newQuiz">New quiz</button>
+          <span id="quizScore" class="score"></span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="wrap" style="text-align:center;color:var(--muted);padding:40px 0 60px">
+      Single-file HTML/CSS/JS. Host directly on GitHub Pages.
+    </footer>
+  </main>
+
+  <script>
+    // ----- helpers -----
+    function tag(t, cls=''){ return `<span class="tag ${cls}">${t}</span>`; }
+    function cleanNumber(s){
+      if(!s) return '';
+      s = s.trim();
+      let neg=false;
+      if(s.startsWith('+')||s.startsWith('-')){ neg=s[0]==='-'; s=s.slice(1); }
+      s = s.replace(/[,\\s]/g,'');
+      if(!/^\\d+$/.test(s)) return null;
+      s = s.replace(/^0+(?=\\d)/,'');
+      return (neg?'-':'') + s;
+    }
+    function digitArray(numStr){ return numStr.replace(/^-/, '').split('').map(ch=>Number(ch)); }
+    function sum(arr){ return arr.reduce((a,c)=>a+c,0); }
+    function remainderMod3(n){ return ((n%3)+3)%3; }
+    function formatWithCommas(s){ return s.replace(/\\B(?=(\\d{3})+(?!\\d))/g,','); }
+
+    function explainDivBy3(raw){
+      const res = document.getElementById('result');
+      if(!raw){ res.innerHTML = tag('Please enter a number.','warn'); return; }
+      const cleaned = cleanNumber(raw);
+      if(cleaned===null){ res.innerHTML = tag('Use digits 0–9 (you can include commas/spaces).','bad'); return; }
+
+      const neg = cleaned.startsWith('-');
+      const num = neg ? cleaned.slice(1) : cleaned;
+      const digits = digitArray(num);
+      const digitsLine = digits.join(' + ');
+      const firstSum = sum(digits);
+      const r1 = remainderMod3(firstSum);
+
+      // Do one optional reduction step (sum of digits of the sum) so students see the “keep reducing” idea
+      const reduceDigits = String(firstSum).split('').map(d=>Number(d));
+      const secondSum = sum(reduceDigits);
+      const r2 = remainderMod3(secondSum);
+
+      const formatted = formatWithCommas(num);
+
+      res.innerHTML = `
+        <div class="explain">
+          <p><strong>Number:</strong> <span class="mono">${neg?'-':''}${formatted}</span></p>
+          <p><strong>Step 1.</strong> Add the digits: <span class="mono">${digitsLine} = ${firstSum}</span>.</p>
+          <p><strong>Step 2.</strong> A number and its digit sum leave the <em>same remainder mod 3</em>, because <span class="mono">10 ≡ 1 (mod 3)</span>. So the remainder is the same as <span class="mono">${firstSum} mod 3 = ${r1}</span>.</p>
+          <p><strong>Optional Step.</strong> Reduce again: <span class="mono">${firstSum}</span> → digits sum to <span class="mono">${reduceDigits.join(' + ')} = ${secondSum}</span> (still same remainder <span class="mono">= ${r2}</span>).</p>
+          <p>${r1===0 ? tag('Therefore: divisible by 3 ✔','ok') : tag('Therefore: not divisible by 3 ✗','bad')}</p>
+          <details><summary>One-line mod view</summary>
+            <p class="mono">N = Σ aᵢ·10ᵢ ≡ Σ aᵢ·1ᵢ = Σ aᵢ (mod 3).</p>
+          </details>
+        </div>`;
+    }
+
+    // UI events
+    document.getElementById('checkBtn').addEventListener('click', ()=>{
+      explainDivBy3(document.getElementById('numInput').value);
+    });
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      document.getElementById('numInput').value='';
+      document.getElementById('result').innerHTML='';
+    });
+    document.querySelectorAll('[data-ex]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        document.getElementById('numInput').value = b.getAttribute('data-ex');
+        document.getElementById('result').innerHTML='';
+      });
+    });
+
+    // ----- quiz -----
+    const quizBox = document.getElementById('quizBox');
+    const quizScore = document.getElementById('quizScore');
+
+    function qBank(){
+      return [
+        {q:'Why does the digit-sum rule work for 3 in decimal?', opts:['Because 10 ≡ 1 (mod 3)','Because 10 ≡ −1 (mod 3)','Because 3 is even','Because 10 ≡ 0 (mod 3)'], a:0},
+        {q:'Which is divisible by 3?', opts:['27531','913','1201','1002? only if last digit is even'], a:0},
+        {q:'Digit sum of 144,999 is…', opts:['27','36','30','24'], a:1},
+        {q:'If Σdigits ≡ 2 (mod 3), what about the original number?', opts:['Divisible by 3','Remainder 1','Remainder 2','Need more info'], a:2},
+        {q:'Complete: N ≡ ____ (mod 3).', opts:['last digit','first digit','sum of digits','product of digits'], a:2}
+      ];
+    }
+    function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; }
+    function newQuiz(){
+      const bank = shuffle(qBank()).slice(0,5);
+      let score=0, answered=0;
+      quizScore.textContent=''; quizBox.innerHTML='';
+      bank.forEach((it,idx)=>{
+        const div=document.createElement('div');
+        div.className='q';
+        div.innerHTML = `<div><strong>Q${idx+1}.</strong> ${it.q}</div>` +
+          it.opts.map((o,i)=>`<div class="opt" data-i="${i}">${o}</div>`).join('');
+        quizBox.appendChild(div);
+        div.querySelectorAll('.opt').forEach(opt=>{
+          opt.addEventListener('click',()=>{
+            if(opt.classList.contains('correct')||opt.classList.contains('wrong')) return;
+            const i=Number(opt.getAttribute('data-i'));
+            if(i===it.a){ opt.classList.add('correct'); score++; }
+            else opt.classList.add('wrong');
+            answered++;
+            if(answered===bank.length){ quizScore.textContent=`Score: ${score}/${bank.length}`; }
+          });
+        });
+      });
+    }
+    document.getElementById('newQuiz').addEventListener('click', newQuiz);
+    newQuiz();
+  </script>
+</body>
+</html>
