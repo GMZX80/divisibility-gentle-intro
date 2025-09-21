@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Divisibility Rules — gentle intro</title>
+  <style>
+    :root{
+      --bg:#0b1020; /* same deep navy background */
+      --card:#121a33; /* card background */
+      --ink:#eaf2ff; /* main text */
+      --muted:#a9b8d6; /* secondary text */
+      --accent:#7cc4ff; /* highlight */
+      --ok:#8ef6b1; /* green good */
+      --warn:#ffd27c; /* amber warning */
+      --bad:#ff9aa2; /* red bad */
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;line-height:1.55}
+    a{color:var(--accent)}
+    header{padding:28px 16px 8px;position:sticky;top:0;background:linear-gradient(180deg,var(--bg),rgba(11,16,32,.85) 40%,rgba(11,16,32,.6) 100%);backdrop-filter:blur(6px);z-index:50}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 14px}
+    h1{font-size:clamp(1.6rem,2.2vw,2.1rem);margin:.2rem 0 0.5rem}
+    .sub{color:var(--muted);font-size:.98rem}
+    nav{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:10px}
+    nav a{padding:8px 12px;border:1px solid rgba(255,255,255,.12);border-radius:999px;text-decoration:none;color:var(--ink)}
+
+    main{padding:18px 0 60px}
+    section{margin:28px 0;padding:22px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
+    h2{margin:0 0 12px;font-size:1.3rem}
+    h3{margin:18px 0 8px;font-size:1.05rem;color:var(--accent)}
+    p{margin:.4rem 0;color:#dfe7ff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .card{background:#0f1630;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
+    .muted{color:var(--muted)}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin:2px 4px 2px 0;font-size:.86rem;border:1px solid rgba(255,255,255,.18)}
+    .tag.ok{background:rgba(142,246,177,.15);border-color:rgba(142,246,177,.35)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input[type="number"], input[type="text"], select{background:#0a0f22;color:var(--ink);border:1px solid rgba(255,255,255,.18);padding:10px;border-radius:10px;width:100%;box-sizing:border-box}
+    button{background:linear-gradient(180deg,#2a67ff,#3bb0ff);color:white;border:none;padding:10px 14px;border-radius:12px;cursor:pointer;box-shadow:0 8px 14px rgba(0,0,0,.3)}
+    button.secondary{background:#1a2344}
+    code{background:#0a0f22;border:1px solid rgba(255,255,255,.12);padding:2px 6px;border-radius:6px}
+
+    .quiz .q{margin:8px 0 14px}
+    .quiz .opt{margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);cursor:pointer}
+    .quiz .opt.correct{border-color:rgba(142,246,177,.7);background:rgba(142,246,177,.12)}
+    .quiz .opt.wrong{border-color:rgba(255,154,162,.6);background:rgba(255,154,162,.1)}
+    .score{font-weight:700}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Divisibility Rules — a gentle introduction</h1>
+      <div class="sub">For ages ~16+. Learn what divisibility means, quick rules for 2–10, test interactively, and practise with a short quiz.</div>
+      <nav>
+        <a href="#what">Divisibility?</a>
+        <a href="#rules">Rules</a>
+        <a href="#tester">Tester</a>
+        <a href="#why">Why useful?</a>
+        <a href="#quiz">Quiz</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="what">
+      <h2>1) What does divisibility mean?</h2>
+      <p>A number <code>a</code> is <strong>divisible</strong> by <code>b</code> if dividing leaves no remainder. We write <code>b | a</code> ("b divides a").</p>
+      <p>Examples: 15 ÷ 3 = 5 so 3 | 15. But 16 ÷ 3 = 5 remainder 1, so 3 ∤ 16.</p>
+    </section>
+
+    <section id="rules">
+      <h2>2) Quick reference rules</h2>
+      <div class="grid">
+        <div class="card"><h3>Divisible by 2</h3><p>Number ends in 0,2,4,6,8.</p></div>
+        <div class="card"><h3>Divisible by 3</h3><p>Sum of digits divisible by 3.</p></div>
+        <div class="card"><h3>Divisible by 4</h3><p>Last two digits divisible by 4.</p></div>
+        <div class="card"><h3>Divisible by 5</h3><p>Ends in 0 or 5.</p></div>
+        <div class="card"><h3>Divisible by 6</h3><p>Divisible by both 2 and 3.</p></div>
+        <div class="card"><h3>Divisible by 8</h3><p>Last three digits divisible by 8.</p></div>
+        <div class="card"><h3>Divisible by 9</h3><p>Sum of digits divisible by 9.</p></div>
+        <div class="card"><h3>Divisible by 10</h3><p>Ends in 0.</p></div>
+      </div>
+      <p class="muted">Bonus: divisible by 11 if alternating sum of digits (subtract-add-subtract…) is divisible by 11.</p>
+    </section>
+
+    <section id="tester">
+      <h2>3) Interactive tester</h2>
+      <div class="card">
+        <label class="muted" for="num">Enter a number:</label>
+        <input id="num" type="number" placeholder="e.g. 132" />
+        <div class="row" style="margin-top:10px">
+          <button id="checkBtn">Check divisibility</button>
+          <button class="secondary" id="clearBtn">Clear</button>
+        </div>
+        <div id="out" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <section id="why">
+      <h2>4) Why is this useful?</h2>
+      <p>Divisibility rules help you:</p>
+      <ul>
+        <li>Simplify fractions (check for common factors quickly).</li>
+        <li>Spot prime numbers (no small divisors).</li>
+        <li>Do mental arithmetic (is 735 divisible by 5? yes — ends in 5).</li>
+        <li>Solve exam questions fast without a calculator.</li>
+      </ul>
+    </section>
+
+    <section id="quiz" class="quiz">
+      <h2>5) Quick quiz</h2>
+      <div class="card">
+        <div id="quizBox"></div>
+        <div class="row" style="margin-top:10px">
+          <button id="newQuiz">New quiz</button>
+          <span id="quizScore" class="score"></span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="wrap" style="text-align:center;color:var(--muted);padding:40px 0 60px">
+      Single‑file HTML/CSS/JS. Host directly on GitHub Pages.
+    </footer>
+  </main>
+
+  <script>
+    // ---------- Divisibility tester ----------
+    function divisibilityRules(n){
+      const results=[];
+      const s = String(Math.abs(n));
+      const sumDigits = s.split('').reduce((a,c)=>a+parseInt(c),0);
+      if(n%2===0) results.push('Divisible by 2');
+      if(sumDigits%3===0) results.push('Divisible by 3');
+      if(Number(s.slice(-2))%4===0) results.push('Divisible by 4');
+      if(n%5===0) results.push('Divisible by 5');
+      if(n%6===0) results.push('Divisible by 6');
+      if(Number(s.slice(-3))%8===0) results.push('Divisible by 8');
+      if(sumDigits%9===0) results.push('Divisible by 9');
+      if(n%10===0) results.push('Divisible by 10');
+      // bonus 11
+      const alt = s.split('').reduce((acc,c,i)=>acc+(i%2===0?parseInt(c):-parseInt(c)),0);
+      if(alt%11===0) results.push('Divisible by 11 (bonus)');
+      return results;
+    }
+
+    const num=document.getElementById('num');
+    const out=document.getElementById('out');
+    document.getElementById('checkBtn').addEventListener('click',()=>{
+      const n=Number(num.value);
+      if(Number.isNaN(n)){ out.innerHTML='<span class="tag bad">Please enter a number</span>'; return; }
+      const res=divisibilityRules(n);
+      if(res.length===0) out.innerHTML='<span class="tag warn">No simple rule applies</span>';
+      else out.innerHTML=res.map(r=>`<span class="tag ok">${r}</span>`).join(' ');
+    });
+    document.getElementById('clearBtn').addEventListener('click',()=>{ num.value=''; out.innerHTML=''; });
+
+    // ---------- Quiz ----------
+    const quizBox=document.getElementById('quizBox');
+    const quizScore=document.getElementById('quizScore');
+    function qBank(){
+      return [
+        {q:'Which is divisible by 3?', opts:['122','231','404','505'], a:1},
+        {q:'Which is divisible by 4?', opts:['112','213','314','505'], a:0},
+        {q:'Which is divisible by 5?', opts:['123','246','735','998'], a:2},
+        {q:'Why is 132 divisible by 6?', opts:['It ends in 2','Sum of digits is 6 (div by 3) and it is even','Last 2 digits divisible by 4','None'], a:1},
+        {q:'Which is divisible by 9?', opts:['234','441','567','890'], a:2},
+        {q:'Which is divisible by 10?', opts:['2001','2010','2025','2033'], a:1},
+        {q:'Divisibility rule for 2 checks…', opts:['Last digit','Sum of digits','First digit','All digits even'], a:0}
+      ];
+    }
+
+    function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; }
+
+    function newQuiz(){
+      const bank=shuffle(qBank()).slice(0,5);
+      let score=0,answered=0;
+      quizScore.textContent='';
+      quizBox.innerHTML='';
+      bank.forEach((item,idx)=>{
+        const div=document.createElement('div');
+        div.className='q';
+        div.innerHTML=`<div><strong>Q${idx+1}.</strong> ${item.q}</div>`+
+          item.opts.map((o,i)=>`<div class=\"opt\" data-i=\"${i}\">${o}</div>`).join('');
+        quizBox.appendChild(div);
+        div.querySelectorAll('.opt').forEach(opt=>{
+          opt.addEventListener('click',()=>{
+            if(opt.classList.contains('correct')||opt.classList.contains('wrong')) return;
+            const i=Number(opt.getAttribute('data-i'));
+            if(i===item.a){ opt.classList.add('correct'); score++; }
+            else opt.classList.add('wrong');
+            answered++;
+            if(answered===bank.length){ quizScore.textContent=`Score: ${score}/${bank.length}`; }
+          });
+        });
+      });
+    }
+    document.getElementById('newQuiz').addEventListener('click', newQuiz);
+    newQuiz();
+  </script>
+</body>
+</html>
